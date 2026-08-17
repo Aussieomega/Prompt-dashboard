@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Prompt Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1a1a1a;
+        }
+        
+        .subtitle {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .search-section {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .search-box {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 1rem;
+        }
+        
+        .filters {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .filter-group label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #999;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .filter-group select {
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 12px;
+            background: white;
+        }
+        
+        .prompts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .prompt-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .prompt-card:hover {
+            border-color: #999;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .prompt-channel {
+            font-size: 10px;
+            font-weight: 700;
+            color: #999;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .prompt-subcategory {
+            font-size: 12px;
+            background: #e3f2fd;
+            color: #1976d2;
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .prompt-description {
+            font-size: 13px;
+            color: #1a1a1a;
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+        
+        .prompt-tags {
+            font-size: 11px;
+            color: #666;
+        }
+        
+        .prompt-tag {
+            display: inline-block;
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-right: 4px;
+            margin-bottom: 4px;
+        }
+        
+        .editor-panel {
+            display: none;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .editor-panel.visible {
+            display: block;
+        }
+        
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 1rem;
+        }
+        
+        .editor-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .close-btn {
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            color: #333;
+        }
+        
+        .close-btn:hover {
+            background: #f5f5f5;
+        }
+        
+        .audience-section {
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .audience-section h3 {
+            font-size: 12px;
+            font-weight: 700;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .audience-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .input-group label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .input-group input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #1976d2;
+            box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+        }
+        
+        .fields-section {
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .field-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .field-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .field-label.missing {
+            color: #d32f2f;
+            font-weight: 700;
+        }
+        
+        .field-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+        
+        .field-input.missing {
+            border-color: #d32f2f;
+            background-color: #ffebee;
+        }
+        
+        .field-input:focus {
+            outline: none;
+            border-color: #1976d2;
+            box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+        }
+        
+        .field-hint {
+            font-size: 11px;
+            color: #d32f2f;
+            margin-top: 0.25rem;
+            font-style: italic;
+        }
+        
+        .preview-section {
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .preview-section h3 {
+            font-size: 12px;
+            font-weight: 700;
+            color: #1565c0;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .live-preview {
+            background: white;
+            border-left: 3px solid #1976d2;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 11px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-word;
+            max-height: 300px;
+            overflow-y: auto;
+            color: #1a1a1a;
+            margin-bottom: 1rem;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .copy-btn {
+            flex: 1;
+            padding: 10px;
+            background: #1976d2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .copy-btn:hover:not(:disabled) {
+            background: #1565c0;
+        }
+        
+        .copy-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .reset-btn {
+            flex: 1;
+            padding: 10px;
+            background: white;
+            color: #333;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        
+        .reset-btn:hover {
+            background: #f5f5f5;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #999;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Content Prompt Dashboard</h1>
+            <p class="subtitle">Select a prompt, fill in details, build your final prompt live, copy to your AI platform.</p>
+        </header>
+        
+        <div class="search-section">
+            <input type="text" id="searchBox" class="search-box" placeholder="Search prompts by keyword...">
+            <div class="filters">
+                <div class="filter-group">
+                    <label>Channel</label>
+                    <select id="channelFilter">
+                        <option value="">All channels</option>
+                        <option value="Social Media">Social Media</option>
+                        <option value="Blog">Blog</option>
+                        <option value="Email">Email</option>
+                        <option value="Product/Website">Product/Website</option>
+                        <option value="Video/Multimedia">Video/Multimedia</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Sub-category</label>
+                    <select id="subcategoryFilter">
+                        <option value="">All sub-categories</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="prompts-grid" id="promptsGrid"></div>
+        <div class="empty-state" id="emptyState">No prompts found</div>
+        
+        <div class="editor-panel" id="editorPanel">
+            <div class="editor-header">
+                <h2 id="editorTitle"></h2>
+                <button class="close-btn" onclick="closeEditor()">Close editor</button>
+            </div>
+            
+            <div class="audience-section">
+                <h3>Target Audience & Insight</h3>
+                <div class="audience-inputs">
+                    <div class="input-group">
+                        <label>Target audience</label>
+                        <input type="text" id="targetAudience" placeholder="e.g., B2B SaaS marketers, HR managers" oninput="updateLivePreview()">
+                    </div>
+                    <div class="input-group">
+                        <label>Key insight or POV</label>
+                        <input type="text" id="keyInsight" placeholder="Your main idea or perspective" oninput="updateLivePreview()">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="fields-section" id="fieldsContainer"></div>
+            
+            <div class="preview-section">
+                <h3>Live Prompt Preview</h3>
+                <div class="live-preview" id="livePreview"></div>
+                <div class="button-group">
+                    <button class="copy-btn" id="copyBtn" onclick="copyFinalPrompt()">Copy final prompt</button>
+                    <button class="reset-btn" onclick="resetFields()">Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const subcategoryMap = {
+            'Social Media': ['LinkedIn', 'Instagram', 'Twitter/X', 'TikTok'],
+            'Blog': ['Thought Leadership', 'How-to/Tutorial', 'Case Study', 'Industry Trends'],
+            'Email': ['Nurture', 'Newsletter', 'Announcement', 'Re-engagement'],
+            'Product/Website': ['Homepage', 'Feature page', 'Landing page', 'Pricing/Plans'],
+            'Video/Multimedia': ['YouTube script', 'Webinar copy'],
+            'Other': ['Brainstorming']
+        };
+        
+        const prompts = [
+            { prompt: "You are [CEO_NAME], CEO of [COMPANY]. Write a LinkedIn post about [TOPIC] for [TARGET_AUDIENCE]. Tone: [TONE]. Keep it 150–200 words. End with a question.", channel: "Social Media", subcategory: "LinkedIn", tags: "CEO voice, B2B SaaS", description: "CEO LinkedIn posts", questions: "CEO_NAME, COMPANY, TOPIC, TARGET_AUDIENCE, TONE" },
+            { prompt: "Outline a 2,000–3,000 word thought leadership piece on [TOPIC] for [AUDIENCE]. Your key insight: [KEY_INSIGHT]. Include a [CONTRARIAN_ANGLE: yes/no] perspective. Use these data sources: [DATA_SOURCES]. Structure: hook, 4–5 sections with examples, conclusion with takeaway.", channel: "Blog", subcategory: "Thought Leadership", tags: "long-form, authority", description: "Authoritative thought leadership", questions: "TOPIC, AUDIENCE, KEY_INSIGHT, CONTRARIAN_ANGLE, DATA_SOURCES" },
+            { prompt: "Write a 1,000–1,500 word how-to guide on [TOPIC]. Target skill level: [SKILL_LEVEL]. Expected outcome for reader: [TARGET_OUTCOME]. Tools/requirements: [TOOLS_REQUIRED]. Include: intro, [NUM_STEPS: 5-7] numbered steps with visuals/examples, common mistakes, wrap-up CTA.", channel: "Blog", subcategory: "How-to/Tutorial", tags: "tutorial, actionable", description: "Step-by-step guide", questions: "TOPIC, SKILL_LEVEL, TARGET_OUTCOME, NUM_STEPS, TOOLS_REQUIRED" },
+            { prompt: "Write a case study (1,500 words) for [CLIENT_NAME]. Challenge faced: [CHALLENGE_DESCRIPTION]. Solution implemented: [SOLUTION_DESCRIPTION]. Results to highlight: [METRICS_TYPE: ROI/time/efficiency]. Structure: challenge, solution, results (with metrics), learnings. Tone: professional, benefit-focused.", channel: "Blog", subcategory: "Case Study", tags: "social proof, evidence", description: "Real-world case study", questions: "CLIENT_NAME, CHALLENGE_DESCRIPTION, SOLUTION_DESCRIPTION, METRICS_TYPE" },
+            { prompt: "Write industry trends synthesis (500 words) for [INDUSTRY]. Focus area: [FOCUS_AREA: regulation/tech/buyer behavior]. Include [NUM_TRENDS: 3-4] emerging trends, drivers, winners/losers, implications for [COMPANY]. Tone: [TONE: optimistic/cautious/balanced]. Format: intro + trend 1 + trend 2 + trend 3 + conclusion.", channel: "Blog", subcategory: "Industry Trends", tags: "trends, analysis", description: "Market trends synthesis", questions: "INDUSTRY, FOCUS_AREA, NUM_TRENDS, COMPANY, TONE" },
+            { prompt: "Write a nurture email for [SEGMENT]. Goal: [CTA]. Pain point: [PAIN]. Subject + 80-word body. Start with hook, benefit-first, end with one clear next step. Tone: [TONE].", channel: "Email", subcategory: "Nurture", tags: "demand gen", description: "Nurture email copy", questions: "SEGMENT, CTA, PAIN, TONE" },
+            { prompt: "Write a [SECTION: headline/subheadline/body] for [PRODUCT] homepage targeting [PERSONA]. Key benefit: [BENEFIT]. Tone: [TONE]. No jargon, benefit-first, 1–3 sentences max.", channel: "Product/Website", subcategory: "Homepage", tags: "conversion", description: "Homepage section", questions: "SECTION, PRODUCT, PERSONA, BENEFIT, TONE" },
+            { prompt: "Brainstorm 10 ideas for [GOAL: topics/angles/CTAs]. Context: [CONTEXT]. Audience: [AUDIENCE]. Format as numbered list with one-line explanations. Tone: [TONE].", channel: "Other", subcategory: "Brainstorming", tags: "ideation", description: "Brainstorm ideas", questions: "GOAL, CONTEXT, AUDIENCE, TONE" },
+            { prompt: "Write an Instagram caption (150 words max) about [TOPIC] for [AUDIENCE]. Tone: [TONE]. Include 5–10 relevant hashtags. End with a call-to-action or question.", channel: "Social Media", subcategory: "Instagram", tags: "social", description: "Instagram caption", questions: "TOPIC, AUDIENCE, TONE" },
+            { prompt: "Write a 3–5 tweet thread on [TOPIC] for [AUDIENCE]. Each tweet max 280 characters. Hook readers in tweet 1, build momentum in 2–4, conclude with CTA in 5. Tone: [TONE].", channel: "Social Media", subcategory: "Twitter/X", tags: "real-time", description: "Twitter thread", questions: "TOPIC, AUDIENCE, TONE" },
+            { prompt: "Write a newsletter intro (80 words) and 3 story summaries (100 words each) for [TOPIC]. Format: Intro + Story 1 + Story 2 + Story 3 + CTA. Tone: [TONE].", channel: "Email", subcategory: "Newsletter", tags: "curated", description: "Newsletter template", questions: "TOPIC, TONE" },
+            { prompt: "Write a feature page copy (300 words) for [FEATURE] explaining how it solves [PAIN_POINT]. Include: what it does, who it's for, key benefits (3–4), one use case example. Tone: benefit-driven, no jargon.", channel: "Product/Website", subcategory: "Feature page", tags: "product marketing", description: "Feature page copy", questions: "FEATURE, PAIN_POINT" },
+            { prompt: "Write a landing page headline (10–15 words) and subheadline (20–30 words) for a campaign targeting [PERSONA] around [CAMPAIGN_GOAL]. Lead with outcome, not features. Tone: [TONE].", channel: "Product/Website", subcategory: "Landing page", tags: "conversion", description: "Landing page headlines", questions: "PERSONA, CAMPAIGN_GOAL, TONE" },
+            { prompt: "Write announcement email copy (150 words) for [ANNOUNCEMENT: product launch/partnership/feature]. Include: what's new, why it matters, link to learn more, CTA. Tone: excited but professional.", channel: "Email", subcategory: "Announcement", tags: "product launch", description: "Announcement email", questions: "ANNOUNCEMENT" },
+            { prompt: "Write a TikTok video script (30–60 seconds) on [TOPIC] for [AUDIENCE]. Include: hook (first 3 seconds), main content (visuals + voiceover), CTA. Tone: energetic, relatable, [TONE]. Format as: [SECONDS] - [ACTION/TEXT].", channel: "Social Media", subcategory: "TikTok", tags: "video", description: "TikTok script", questions: "TOPIC, AUDIENCE, TONE" },
+            { prompt: "Write YouTube video script (5–10 minutes) on [TOPIC] for [AUDIENCE]. Structure: hook (0–30s), intro (30s–1m), main content (3–4 sections), call-to-action (end). Include: timestamps, visuals notes, talking points.", channel: "Video/Multimedia", subcategory: "YouTube script", tags: "education", description: "YouTube script", questions: "TOPIC, AUDIENCE" },
+            { prompt: "Write webinar copy (300 words): title (10–15 words), description (50 words), agenda (3 sections with benefits), speaker intro, CTA to register. Tone: educational, value-forward.", channel: "Video/Multimedia", subcategory: "Webinar copy", tags: "webinar", description: "Webinar marketing copy", questions: "TOPIC, SPEAKER_NAME" },
+            { prompt: "Write re-engagement email (120 words) to inactive users for [SEGMENT]. Acknowledge inactivity, remind of key benefits/updates, offer incentive (if applicable), CTA to return. Tone: warm, not pushy.", channel: "Email", subcategory: "Re-engagement", tags: "retention", description: "Re-engagement email", questions: "SEGMENT, INCENTIVE" },
+            { prompt: "Write pricing page copy (400 words): intro (why pricing matters), 3–4 plan tiers (name, price, features, CTA), FAQ (3 questions), bottom CTA. Tone: transparent, value-focused, no pressure.", channel: "Product/Website", subcategory: "Pricing/Plans", tags: "conversion", description: "Pricing page copy", questions: "" },
+            { prompt: "Create 5 compelling subject lines for [EMAIL_TYPE: nurture/announcement/re-engagement] targeting [PERSONA]. Goal: [CTA]. Make 2 curiosity-driven, 2 benefit-driven, 1 personalized. Format as numbered list.", channel: "Email", subcategory: "Newsletter", tags: "testing", description: "Subject line variations", questions: "EMAIL_TYPE, PERSONA, CTA" },
+        ];
+        
+        let currentPromptIdx = null;
+        
+        document.getElementById('channelFilter').addEventListener('change', updateSubcategories);
+        document.getElementById('subcategoryFilter').addEventListener('change', filterPrompts);
+        document.getElementById('searchBox').addEventListener('input', filterPrompts);
+        
+        function updateSubcategories() {
+            const channel = document.getElementById('channelFilter').value;
+            const subcategorySelect = document.getElementById('subcategoryFilter');
+            subcategorySelect.innerHTML = '<option value="">All sub-categories</option>';
+            if (channel && subcategoryMap[channel]) {
+                subcategoryMap[channel].forEach(sub => {
+                    const option = document.createElement('option');
+                    option.value = sub;
+                    option.textContent = sub;
+                    subcategorySelect.appendChild(option);
+                });
+            }
+            filterPrompts();
+        }
+        
+        function filterPrompts() {
+            const search = document.getElementById('searchBox').value.toLowerCase();
+            const channel = document.getElementById('channelFilter').value;
+            const subcategory = document.getElementById('subcategoryFilter').value;
+            const filtered = prompts.filter(p => {
+                const matchesSearch = !search || p.prompt.toLowerCase().includes(search) || p.description.toLowerCase().includes(search);
+                const matchesChannel = !channel || p.channel === channel;
+                const matchesSubcategory = !subcategory || p.subcategory === subcategory;
+                return matchesSearch && matchesChannel && matchesSubcategory;
+            });
+            renderPrompts(filtered);
+        }
+        
+        function renderPrompts(filteredPrompts) {
+            const grid = document.getElementById('promptsGrid');
+            const emptyState = document.getElementById('emptyState');
+            if (filteredPrompts.length === 0) {
+                grid.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+            emptyState.style.display = 'none';
+            grid.innerHTML = filteredPrompts.map((p, idx) => `
+                <div class="prompt-card" onclick="selectPrompt(${prompts.indexOf(p)})">
+                    <div class="prompt-channel">${p.channel}</div>
+                    <div class="prompt-subcategory">${p.subcategory}</div>
+                    <div class="prompt-description">${p.description}</div>
+                    <div class="prompt-tags">${p.tags.split(', ').map(t => `<span class="prompt-tag">${t}</span>`).join('')}</div>
+                </div>
+            `).join('');
+        }
+        
+        function selectPrompt(idx) {
+            currentPromptIdx = idx;
+            const p = prompts[idx];
+            document.getElementById('editorTitle').textContent = `${p.subcategory} • ${p.channel}`;
+            document.getElementById('editorPanel').classList.add('visible');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            const questionsList = p.questions ? p.questions.split(', ') : [];
+            const fieldsContainer = document.getElementById('fieldsContainer');
+            fieldsContainer.innerHTML = questionsList.map(q => {
+                const isMissing = q && !q.includes(':');
+                return `
+                    <div class="field-group">
+                        <label class="field-label ${isMissing ? 'missing' : ''}">[${q}]</label>
+                        <input type="text" class="field-input ${isMissing ? 'missing' : ''}" data-field="${q}" placeholder="Enter ${q.toLowerCase()}" oninput="updateLivePreview()">
+                        ${isMissing ? '<div class="field-hint">Required field</div>' : ''}
+                    </div>
+                `;
+            }).join('');
+            
+            updateLivePreview();
+        }
+        
+        function updateLivePreview() {
+            const p = prompts[currentPromptIdx];
+            let preview = p.prompt;
+            const targetAudience = document.getElementById('targetAudience').value;
+            const keyInsight = document.getElementById('keyInsight').value;
+            
+            if (targetAudience && !preview.includes('[TARGET_AUDIENCE]')) {
+                preview = preview.replace('[AUDIENCE]', targetAudience);
+            }
+            if (keyInsight) {
+                preview = preview.replace('[KEY_INSIGHT]', keyInsight);
+            }
+            
+            document.querySelectorAll('.field-input').forEach(input => {
+                const field = input.dataset.field;
+                const value = input.value;
+                const placeholder = `[${field}]`;
+                if (value) {
+                    preview = preview.split(placeholder).join(value);
+                }
+            });
+            
+            document.getElementById('livePreview').textContent = preview;
+            
+            const hasAllFields = !preview.includes('[');
+            document.getElementById('copyBtn').disabled = !hasAllFields;
+        }
+        
+        function copyFinalPrompt() {
+            const preview = document.getElementById('livePreview').textContent;
+            navigator.clipboard.writeText(preview).then(() => {
+                const btn = document.getElementById('copyBtn');
+                const orig = btn.textContent;
+                btn.textContent = '✓ Copied!';
+                setTimeout(() => { btn.textContent = orig; }, 2000);
+            });
+        }
+        
+        function resetFields() {
+            document.getElementById('targetAudience').value = '';
+            document.getElementById('keyInsight').value = '';
+            document.querySelectorAll('.field-input').forEach(input => input.value = '');
+            updateLivePreview();
+        }
+        
+        function closeEditor() {
+            document.getElementById('editorPanel').classList.remove('visible');
+            currentPromptIdx = null;
+        }
+        
+        filterPrompts();
+    </script>
+</body>
+</html>
