@@ -1,0 +1,1141 @@
+{
+  "name": "Lets Retire - Main Workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        208
+      ],
+      "id": "398b11fc-cb78-403c-8ca5-920ee10d8745",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1JRjsRS_1mONGFYvcqnxxTTv8BA69YrFs0xQUZ1YWaDw",
+          "mode": "list",
+          "cachedResultName": "IPLiving Events - Staff Entry Form",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1JRjsRS_1mONGFYvcqnxxTTv8BA69YrFs0xQUZ1YWaDw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1477620428,
+          "mode": "list",
+          "cachedResultName": "Form responses",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1JRjsRS_1mONGFYvcqnxxTTv8BA69YrFs0xQUZ1YWaDw/edit#gid=1477620428"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        96,
+        208
+      ],
+      "id": "276f2abc-9670-42a2-97de-04680d9833ed",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "eBOWKMcZRJ5tASpo",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json['Marketing check'] }}",
+                    "rightValue": "Yes",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "31f86e68-3e9a-46f0-8c2d-a21d7b55683d"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Marketing Confirmed"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "e87d7338-98bb-43b2-bc05-c50e37eda3d0",
+                    "leftValue": "={{ $json['Marketing check'] }}",
+                    "rightValue": "No",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Needs more information"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "db30c7cd-0d13-4ade-b0d4-16dba583c7c4",
+                    "leftValue": "={{ $json['Marketing check'] }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "empty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Needs Approval"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "6f13e616-83c9-46ae-a07c-fbe20803368a",
+                    "leftValue": "={{ $json['Marketing check'] }}",
+                    "rightValue": "Cheese",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Cheese"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        320,
+        176
+      ],
+      "id": "299fadf2-09e2-4f9c-aabb-cc6057bc34ad",
+      "name": "Switch2"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1JRjsRS_1mONGFYvcqnxxTTv8BA69YrFs0xQUZ1YWaDw",
+          "mode": "list",
+          "cachedResultName": "IPLiving Events",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1JRjsRS_1mONGFYvcqnxxTTv8BA69YrFs0xQUZ1YWaDw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1806432829,
+          "mode": "list",
+          "cachedResultName": "Confirmed - live",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1JRjsRS_1mONGFYvcqnxxTTv8BA69YrFs0xQUZ1YWaDw/edit#gid=1806432829"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Marketing check": "={{ $json['Marketing check'] }}",
+            "Submission ID": "={{ $json['Submission ID'] }}",
+            "Any notes": "={{ $json['Any notes'] }}",
+            "Start date": "={{ $json['Start date'] }}",
+            "Time": "={{ $json.Time }}",
+            "Location in Centre": "={{ $json['Location in Centre'] }}",
+            "One off or recurring?": "={{ $json['One off or recurring?'] }}",
+            "Community Centre": "={{ $json['Community Centre'] }}",
+            "Summary sentence of event": "={{ $json['Summary sentence of event'] }}",
+            "Event title": "={{ $json['Event title'] }}",
+            "Staff member": "={{ $json['Staff member'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Staff member",
+              "displayName": "Staff member",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Event title",
+              "displayName": "Event title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Summary sentence of event",
+              "displayName": "Summary sentence of event",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Community Centre",
+              "displayName": "Community Centre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "One off or recurring?",
+              "displayName": "One off or recurring?",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Location in Centre",
+              "displayName": "Location in Centre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Start date",
+              "displayName": "Start date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Any notes",
+              "displayName": "Any notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Submission ID",
+              "displayName": "Submission ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Marketing check",
+              "displayName": "Marketing check",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        544,
+        -128
+      ],
+      "id": "3f5251a8-a7ae-4e3d-86d9-b939314c99ad",
+      "name": "Marketing confirmed YES to proceed",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "eBOWKMcZRJ5tASpo",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1JRjsRS_1mONGFYvcqnxxTTv8BA69YrFs0xQUZ1YWaDw",
+          "mode": "list",
+          "cachedResultName": "IPLiving Events",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1JRjsRS_1mONGFYvcqnxxTTv8BA69YrFs0xQUZ1YWaDw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 532660140,
+          "mode": "list",
+          "cachedResultName": "Denied, needs more info - No",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1JRjsRS_1mONGFYvcqnxxTTv8BA69YrFs0xQUZ1YWaDw/edit#gid=532660140"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Marketing check": "={{ $json['Marketing check'] }}",
+            "Submission ID": "={{ $json['Submission ID'] }}",
+            "Any notes": "={{ $json['Any notes'] }}",
+            "Start date": "={{ $json['Start date'] }}",
+            "Time": "={{ $json.Time }}",
+            "Location in Centre": "={{ $json['Location in Centre'] }}",
+            "One off or recurring?": "={{ $json['One off or recurring?'] }}",
+            "Community Centre": "={{ $json['Community Centre'] }}",
+            "Summary sentence of event": "={{ $json['Summary sentence of event'] }}",
+            "Event title": "={{ $json['Event title'] }}",
+            "Staff member": "={{ $json['Staff member'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Staff member",
+              "displayName": "Staff member",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Event title",
+              "displayName": "Event title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Summary sentence of event",
+              "displayName": "Summary sentence of event",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Community Centre",
+              "displayName": "Community Centre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "One off or recurring?",
+              "displayName": "One off or recurring?",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Location in Centre",
+              "displayName": "Location in Centre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Start date",
+              "displayName": "Start date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Any notes",
+              "displayName": "Any notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Submission ID",
+              "displayName": "Submission ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Marketing check",
+              "displayName": "Marketing check",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        544,
+        208
+      ],
+      "id": "3f1d04b7-71d7-43f9-83d3-1287ed5891a1",
+      "name": "Marketing checked event, NO, needs more info from staff member",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "eBOWKMcZRJ5tASpo",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1SZQqHX3XRY4NfNlf5rDI4WfNm9EkBkXizD0XSfBfsuA",
+          "mode": "list",
+          "cachedResultName": "IPLiving Events - Marketing Checked",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1SZQqHX3XRY4NfNlf5rDI4WfNm9EkBkXizD0XSfBfsuA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 532660140,
+          "mode": "list",
+          "cachedResultName": "Needs approval",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1SZQqHX3XRY4NfNlf5rDI4WfNm9EkBkXizD0XSfBfsuA/edit#gid=532660140"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Marketing check": "={{ $json['Marketing check'] }}",
+            "Submission ID": "={{ $json['Submission ID'] }}",
+            "Any notes": "={{ $json['Any notes'] }}",
+            "Start date": "={{ $json['Start date'] }}",
+            "Time": "={{ $json.Time }}",
+            "Location in Centre": "={{ $json['Location in Centre'] }}",
+            "Summary sentence of event": "={{ $json['Summary sentence of event'] }}",
+            "Community Centre": "={{ $json['Community Centre'] }}",
+            "One off or recurring?": "={{ $json['One off or recurring?'] }}",
+            "Event title": "={{ $json['Event title'] }}",
+            "Staff member": "={{ $json['Staff member'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Staff member",
+              "displayName": "Staff member",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Event title",
+              "displayName": "Event title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Summary sentence of event",
+              "displayName": "Summary sentence of event",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Community Centre",
+              "displayName": "Community Centre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "One off or recurring?",
+              "displayName": "One off or recurring?",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Location in Centre",
+              "displayName": "Location in Centre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Start date",
+              "displayName": "Start date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Any notes",
+              "displayName": "Any notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Submission ID",
+              "displayName": "Submission ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Marketing check",
+              "displayName": "Marketing check",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        544,
+        400
+      ],
+      "id": "7802217f-e486-4c9e-89ba-ce7ad4f0fc00",
+      "name": "Awaiting Marketing input",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "eBOWKMcZRJ5tASpo",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "HEADER_URL = \"https://www.omegagoodwin.com/wp-content/uploads/2026/10/rosebud-header.jpg\"\nFOOTER_URL = \"https://www.omegagoodwin.com/wp-content/uploads/2026/10/rosebud-footer.jpg\"\n\n\ndef escape(value):\n    return (\n        str(value or \"\")\n        .replace(\"&\", \"&amp;\")\n        .replace(\"<\", \"&lt;\")\n        .replace(\">\", \"&gt;\")\n        .replace('\"', \"&quot;\")\n        .replace(\"'\", \"&#39;\")\n    )\n\n\nmonth_names = [\n    \"January\", \"February\", \"March\", \"April\",\n    \"May\", \"June\", \"July\", \"August\",\n    \"September\", \"October\", \"November\", \"December\"\n]\n\nmonth_numbers = {\n    \"Jan\": 1, \"Feb\": 2, \"Mar\": 3,\n    \"Apr\": 4, \"May\": 5, \"Jun\": 6,\n    \"Jul\": 7, \"Aug\": 8, \"Sep\": 9,\n    \"Oct\": 10, \"Nov\": 11, \"Dec\": 12\n}\n\nif not _items:\n    return []\n\nreference = str(_items[0][\"json\"][\"Current month\"]).split(\"-\")\ncurrent_year = int(reference[0])\ncurrent_month = int(reference[1])\n\ntarget_month = current_month % 12 + 1\ntarget_year = current_year + (current_month == 12)\nmonth_label = month_names[target_month - 1] + \" \" + str(target_year)\n\nevents = []\n\nfor item in _items:\n    row = item[\"json\"]\n\n    village = str(row.get(\"Community Centre\") or \"\").strip()\n    approval = str(row.get(\"Marketing check\") or \"\").strip().lower()\n\n    if village.lower() != \"rosebud village\" or approval != \"yes\":\n        continue\n\n    parts = str(row.get(\"Start date\") or \"\").strip().split()\n\n    if len(parts) != 4:\n        continue\n\n    if (\n        parts[2] not in month_numbers\n        or not parts[1].isdigit()\n        or not parts[3].isdigit()\n    ):\n        continue\n\n    day = int(parts[1])\n\n    if (\n        month_numbers[parts[2]] != target_month\n        or int(parts[3]) != target_year\n        or not 1 <= day <= 31\n    ):\n        continue\n\n    events.append({\n        \"title\": str(row.get(\"Event title\") or \"Activity\").strip(),\n        \"summary\": str(row.get(\"Summary sentence of event\") or \"\").strip(),\n        \"date\": str(row.get(\"Start date\") or \"\").strip(),\n        \"day\": day,\n        \"time\": str(row.get(\"Time\") or \"\").strip(),\n        \"location\": str(row.get(\"Location in Centre\") or \"Other locations\").strip(),\n        \"frequency\": str(row.get(\"One off or recurring?\") or \"\").strip()\n    })\n\nif not events:\n    return []\n\nevents = sorted(events, key=lambda event: (event[\"day\"], event[\"time\"]))\n\nrecurring = {}\nspecial = {}\nseen = set()\n\nfor event in events:\n    frequency_text = event[\"frequency\"].lower()\n\n    if \"fortnight\" in frequency_text:\n        frequency = \"Fortnightly\"\n    elif \"month\" in frequency_text:\n        frequency = \"Monthly\"\n    elif \"week\" in frequency_text:\n        frequency = \"Weekly\"\n    elif \"recurring\" in frequency_text:\n        frequency = \"Recurring\"\n    else:\n        frequency = \"\"\n\n    key = (\n        event[\"location\"].lower(),\n        event[\"title\"].lower(),\n        frequency,\n        event[\"time\"],\n        \"\" if frequency else event[\"date\"]\n    )\n\n    if key in seen:\n        continue\n\n    seen.add(key)\n    event[\"label\"] = frequency\n\n    group = recurring if frequency else special\n    location = event[\"location\"]\n\n    if location not in group:\n        group[location] = []\n\n    group[location].append(event)\n\n\ndef render_groups(groups, is_recurring):\n    output = \"\"\n\n    for location in sorted(groups):\n        output += (\n            '<h3 style=\"font-size:15px;margin:18px 0 8px;'\n            'color:#31574c;\">'\n            + escape(location)\n            + \"</h3>\"\n        )\n\n        for event in groups[location]:\n            if is_recurring:\n                details = event[\"label\"] + \" · First this month: \" + event[\"date\"]\n            else:\n                details = event[\"date\"]\n\n            if event[\"time\"]:\n                details += \" · \" + event[\"time\"]\n\n            output += (\n                '<div style=\"padding:9px 0;border-bottom:1px solid #e6e6e6;\">'\n                '<p style=\"margin:0;font-size:14px;line-height:1.5;\">'\n                \"<strong>\" + escape(event[\"title\"]) + \"</strong></p>\"\n                '<p style=\"margin:3px 0;font-size:12px;line-height:1.5;'\n                'color:#555;\">'\n                + escape(details)\n                + \"</p>\"\n            )\n\n            if event[\"summary\"]:\n                output += (\n                    '<p style=\"margin:3px 0 0;font-size:13px;line-height:1.5;\">'\n                    + escape(event[\"summary\"])\n                    + \"</p>\"\n                )\n\n            output += \"</div>\"\n\n    return output\n\n\nsections = \"\"\n\nif recurring:\n    sections += (\n        '<h2 style=\"font-size:19px;margin:24px 0 10px;\">'\n        \"Regular activities</h2>\"\n        + render_groups(recurring, True)\n    )\n\nif special:\n    sections += (\n        '<h2 style=\"font-size:19px;margin:26px 0 10px;\">'\n        \"Special events of the month</h2>\"\n        + render_groups(special, False)\n    )\n\nhtml = (\n    '<!DOCTYPE html><html><body style=\"margin:0;padding:0;'\n    'background:#f4f2ed;font-family:Arial,sans-serif;color:#333;\">'\n    '<table role=\"presentation\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\"'\n    ' border=\"0\">'\n    '<tr><td align=\"center\" style=\"padding:20px 10px;\">'\n    '<table role=\"presentation\" width=\"600\" cellspacing=\"0\" cellpadding=\"0\"'\n    ' border=\"0\" style=\"width:100%;max-width:600px;background:#fff;\">'\n\n    # Header image\n    '<tr><td style=\"padding:0;font-size:0;line-height:0;\">'\n    '<img src=\"' + escape(HEADER_URL) + '\"'\n    ' alt=\"Rosebud Village\" width=\"600\"'\n    ' style=\"display:block;width:100%;max-width:600px;height:auto;border:0;\">'\n    '</td></tr>'\n\n    # Monthly heading\n    '<tr><td style=\"padding:20px 24px;background:#31574c;color:#fff;\">'\n    '<h1 style=\"margin:0;font-size:25px;line-height:1.3;\">What’s on in '\n    + escape(month_label)\n    + \"</h1></td></tr>\"\n\n    # Introduction and events\n    '<tr><td style=\"padding:20px 24px;\">'\n    '<p style=\"margin:0;font-size:13px;line-height:1.6;\">'\n    'Join us for a month of familiar favourites and special events '\n    'around the village. Explore what’s happening below and find '\n    'something to enjoy with your neighbours.</p>'\n    + sections\n    + \"</td></tr>\"\n\n    # Footer image\n    '<tr><td style=\"padding:0;font-size:0;line-height:0;\">'\n    '<img src=\"' + escape(FOOTER_URL) + '\"'\n    ' alt=\"Rosebud Village · Your monthly activities update\" width=\"600\"'\n    ' style=\"display:block;width:100%;max-width:600px;height:auto;border:0;\">'\n    '</td></tr>'\n\n    \"</table></td></tr></table></body></html>\"\n)\n\nreturn [{\n    \"json\": {\n        \"subject\": \"Rosebud Village | What’s on in \" + month_label,\n        \"html\": html\n    }\n}]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        992,
+        16
+      ],
+      "id": "505aad5c-fb87-4d8c-a167-a0acc3c520ce",
+      "name": "Code for HTML email, next month only"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.omegagoodwin.com/wp-json/wp/v2/pages/2077",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=content",
+              "value": "={{ $json.embed_code }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1568,
+        112
+      ],
+      "id": "71afceb4-234e-45bc-aba9-721a2ad7b62d",
+      "name": "HTTP Request - access to Wordpress and sends to website",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "TkU8SO4E8tQkngq6",
+          "name": "Unnamed credential 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "omega.goodwin@gmail.com",
+        "subject": "={{ $json.subject }}",
+        "message": "={{ $json.html }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1568,
+        -80
+      ],
+      "id": "ef49d663-3934-4cb1-90d8-90a6e747b64c",
+      "name": "Send a message - currently blocked for potentialcode issue",
+      "webhookId": "a328e799-e054-4ba0-a47c-3d7665d9eb14",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "xWXJmEJTHfXqc9Et",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fe6d126f-e90f-406a-8da2-a789adc587b3",
+              "name": "Current month",
+              "value": "={{ $now.setZone('Australia/Melbourne').toFormat('yyyy-MM') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        768,
+        16
+      ],
+      "id": "a2b884ff-a816-42d4-97ac-d0bd6ebf5f69",
+      "name": "Edit Fields - adds current month to allow next node to find next month events"
+    },
+    {
+      "parameters": {
+        "sendTo": "omega.goodwin@gmail.com",
+        "subject": "Event needs more info",
+        "message": "=<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <title>More information needed</title>\n</head>\n\n<body style=\"margin:0; padding:0; background-color:#f0f1eb;\">\n  <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\"\n    style=\"border-collapse:collapse; background-color:#f0f1eb;\">\n    <tr>\n      <td align=\"center\" style=\"padding:24px 12px;\">\n\n        <table role=\"presentation\" width=\"600\" cellpadding=\"0\" cellspacing=\"0\"\n          style=\"width:100%; max-width:600px; border-collapse:collapse;\n          background-color:#ffffff; color:#5a6457;\n          font-family:Arial, sans-serif; font-size:15px; line-height:1.65;\">\n\n          <tr>\n            <td style=\"padding:23px 30px; background-color:#5a6457;\n              color:#ffffff; font-family:Georgia, serif; font-size:25px;\">\n              Rosebud Village\n            </td>\n          </tr>\n\n          <tr>\n            <td style=\"padding:28px 30px 26px;\">\n\n              <div style=\"font-size:11px; letter-spacing:1.5px;\n                text-transform:uppercase; color:#52844f;\">\n                Next step · Complete event details\n              </div>\n\n              <h1 style=\"font-family:Georgia, serif; font-size:32px;\n                line-height:1.15; font-weight:normal;\n                margin:13px 0 22px; color:#5a6457;\">\n                Nearly ready to share.\n              </h1>\n\n              <p style=\"margin:0 0 17px;\">\n                Hi {{ $('Switch2').item.json['Staff member'] }},\n              </p>\n\n              <p style=\"margin:0 0 17px;\">\n                Thanks for sending over\n                <strong>{{ $('Switch2').item.json['Event title'] }}</strong>\n                in the {{ $('Switch2').item.json['Location in Centre'] }}.\n              </p>\n\n              <p style=\"margin:0 0 17px;\">\n                Just a few more details to go. Please reply with the\n                information below so I can publish your event and start\n                promoting it to the community.\n              </p>\n\n              <table role=\"presentation\" width=\"100%\"\n                cellpadding=\"0\" cellspacing=\"0\"\n                style=\"border-collapse:collapse; background-color:#eef1e8;\n                margin:22px 0;\">\n                <tr>\n                  <td style=\"padding:19px 20px;\">\n                    <div style=\"font-size:12px; font-weight:bold;\n                      margin-bottom:8px;\">\n                      Please email me\n                    </div>\n\n                    <div style=\"white-space:pre-wrap;\">{{ $('Marketing checked event, NO, needs more info from staff member').item.json['Any notes'] }}</div>\n                  </td>\n                </tr>\n              </table>\n\n              <table role=\"presentation\" width=\"100%\"\n                cellpadding=\"0\" cellspacing=\"0\"\n                style=\"border-collapse:collapse; background-color:#fdfaf7;\n                border:1px solid #e2e4dc; font-size:14px; line-height:1.8;\">\n\n                <tr>\n                  <td colspan=\"2\"\n                    style=\"padding:15px 18px 8px; font-weight:bold;\">\n                    Your original event details\n                  </td>\n                </tr>\n\n                <tr>\n                  <td width=\"80\"\n                    style=\"padding-left:18px; vertical-align:top;\">\n                    Title\n                  </td>\n                  <td style=\"padding-right:18px; vertical-align:top;\">\n                    {{ $json['Event title'] }}\n                  </td>\n                </tr>\n\n                <tr>\n                  <td style=\"padding-left:18px; vertical-align:top;\">\n                    Location\n                  </td>\n                  <td style=\"padding-right:18px; vertical-align:top;\">\n                    {{ $json['Location in Centre'] }}\n                  </td>\n                </tr>\n\n                <tr>\n                  <td style=\"padding-left:18px; vertical-align:top;\">\n                    Date\n                  </td>\n                  <td style=\"padding-right:18px; vertical-align:top;\">\n                    {{ $json['Start date'] }}\n                  </td>\n                </tr>\n\n                <tr>\n                  <td style=\"padding-left:18px; padding-bottom:16px;\n                    vertical-align:top;\">\n                    Time\n                  </td>\n                  <td style=\"padding-right:18px; padding-bottom:16px;\n                    vertical-align:top;\">\n                    {{ $json.Time }}\n                  </td>\n                </tr>\n\n              </table>\n\n              <p style=\"margin:23px 0 0;\">\n                Thanks,<br>\n                <strong>The Marketing Team</strong>\n              </p>\n\n            </td>\n          </tr>\n\n          <tr>\n            <td style=\"padding:17px 30px; border-top:1px solid #e2e4dc;\n              font-size:12px;\">\n              Rosebud Village · Events for our community\n            </td>\n          </tr>\n\n        </table>\n\n      </td>\n    </tr>\n  </table>\n</body>\n</html>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        992,
+        208
+      ],
+      "id": "76a3033c-aa9b-4101-9988-70951818dee2",
+      "name": "Send a message",
+      "webhookId": "6e6da7a2-9901-4349-9dfe-dfc2cf90ee17",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "xWXJmEJTHfXqc9Et",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "maxItems": 3,
+        "keep": "lastItems"
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        768,
+        208
+      ],
+      "id": "f7a6910b-cc4d-439f-9d39-f0557ebce72e",
+      "name": "Limit - last item in sheet"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "output = []\n\nfor item in _items:\n    data = dict(item[\"json\"])\n    html = str(data.get(\"html\") or \"\")\n\n    if not html:\n        continue\n\n    escaped_html = (\n        html.replace(\"&\", \"&amp;\")\n        .replace('\"', \"&quot;\")\n        .replace(\"<\", \"&lt;\")\n        .replace(\">\", \"&gt;\")\n    )\n\n    data[\"embed_code\"] = (\n        '<iframe title=\"Rosebud Village email preview\" '\n        'sandbox=\"\" '\n        'style=\"display:block;width:100%;max-width:720px;'\n        'height:1400px;margin:0 auto;border:0;\" '\n        'srcdoc=\"' + escaped_html + '\"></iframe>'\n    )\n\n    output.append({\"json\": data})\n\nreturn output"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        16
+      ],
+      "id": "68feae29-fc2d-47a3-a365-1eeef7fd0f87",
+      "name": "Code to convert email as a webpage preview"
+    },
+    {
+      "parameters": {
+        "maxItems": 5,
+        "keep": "lastItems"
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        992,
+        -320
+      ],
+      "id": "11be238a-19e0-408c-a9bd-b07d1f4a1ab1",
+      "name": "Limit - last item in sheet1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "Create a reusable HTML section for a monthly “What’s on” webpage for Rosebud Retirement Village, Victoria. This HTML will be generated by an n8n workflow on the first day of each month and embedded into an existing webpage.\n\nINPUTS\nThe workflow supplies:\n\n1. The target month and year: \n2. Events for that month, including event title, summary sentence, village, location within the village, date, marketing approval status and more-information URL.\n3. Image rows from the Google Sheets tab “Images for each Village location”, including village location, image description and direct image URL.\n4. The existing approved HTML as a design reference.\n\nCONTENT\n- Include only Rosebud events occurring in the target month that have been approved by marketing\n- maximum of 105 words\n- Feature a selection of highlights in warm, welcoming, community-focused prose.\n- Mention each activity only once, including recurring activities.\n- Write in Australian English.\n- Do not invent events, dates or details.\n- Use the supplied target month dynamically. The heading should read “Hello, [Month].”\n- Divide the copy into three short paragraphs: an opening introduction, mentioning something about the season or events in that month, activity highlights, and a closing invitation to visit the village or join one of the activites\n- Match the approved example’s tone and approximate length.\n\nDESIGN\n- Preserve the approved “Flowing story” design.\n- Match the fonts and colour palette of https://www.rosebudvillage.com/.\n- Use Austin for the large serif text and Whitney for supporting text, retaining the font sources in the supplied HTML.\n- Background: #FDFAF7.\n- Main text: #5A6457.\n- Event links: #52844F.\n- Hover text: #2B5336.\n- Hover highlight background: #E7ECDF.\n- Main paragraph text: approximately 34px on desktop and 26px on mobile.\n- Keep the image smaller than the main text block, floated to the right on desktop so the text flows around it.\n- Make the layout responsive and stack the image and text appropriately on mobile.\n- Scope all CSS and JavaScript to a unique section ID so the embed does not affect the surrounding webpage.\n- Do not add duplicate site navigation or a site-wide header or footer.\n\nIMAGES AND INTERACTION\n- On initial page load, display the image labelled “Hero image” in the image tab.\n- Initially show a brief welcome caption. Hide the “Learn more” link until an event is selected.\n- Make event names green and underlined.\n- When a visitor hovers over, focuses on or taps an event name:\n  1. Update the image to the image associated with that event’s location within the village.\n  2. Display that event’s summary sentence immediately beneath the image.\n  3. Append a hyperlinked “Learn more” at the end of the summary sentence.\n  4. Set “Learn more” to that event’s more-information URL.\n- If an image has already been assigned to another featured event, use a different unused image from the supplied image list. Prefer an image relevant to the activity.\n- Reserve the Hero image for the initial page-load state.\n- If there are insufficient suitable images, reuse a relevant image rather than inventing an image URL.\n- Keep the selected image and summary visible when the pointer leaves the event name, so visitors can move to “Learn more”.\n- Give “Learn more” the same text colour, underline and background highlight on hover and keyboard focus as the event names.\n- Prevent image and caption changes from causing disruptive layout shifts.\n- Provide meaningful image alt text and keyboard-accessible interactions.\n- Use supplied image URLs directly. Do not generate images.\n- If an event has no more-information URL, use a clearly marked placeholder anchor; do not invent a real destination.\n\nMONTHLY OPERATION\n- The n8n trigger runs on the first day of each month using the Australia/Melbourne timezone.\n- Generate content for the month beginning of the following month.\n- Use the target month and year supplied by n8n. Never hard-code a month, year or event list.\n- Assume n8n reads the current spreadsheet data and supplies it on each run.\n- Produce a complete replacement HTML section each month.\n- Do not include scheduling logic, Google credentials or spreadsheet API calls in the webpage code.\n\nOUTPUT\nReturn only the ready-to-embed HTML fragment, with scoped CSS and JavaScript included.\nDo not include Markdown code fences, explanations or setup instructions.\nValidate that the event-to-image mappings, summaries, links, Hero initial state and hover/focus/tap interactions are consistent before returning the HTML. {{ $json['Start date'] }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1216,
+        -432
+      ],
+      "id": "06f76ab9-257e-4706-a13e-02b643c234fb",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-nano",
+          "mode": "list",
+          "cachedResultName": "gpt-5-nano"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1224,
+        -200
+      ],
+      "id": "e3ddf6f9-9485-4b82-b159-40f48462282b",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "nVuJ65SHfXp1Lj4z",
+          "name": "OpenAI account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $execution.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        1352,
+        -200
+      ],
+      "id": "0eb9855f-3f52-42ad-a940-277186f5bfd2",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json['Community Centre'] }}",
+                    "rightValue": "Rosebud Village",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "31f86e68-3e9a-46f0-8c2d-a21d7b55683d"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Rosebud Village"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "8d8f5284-0597-4df5-a7b0-79a8ec2c6b5d",
+                    "leftValue": "={{ $json['Community Centre'] }}",
+                    "rightValue": "Rosebud Village",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEquals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Other 5 Villages"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        768,
+        -320
+      ],
+      "id": "8de12ba9-1860-4728-aaca-56d406c03315",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.omegagoodwin.com/wp-json/wp/v2/pages/2082",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=content",
+              "value": "={{ $json.embed_code }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1568,
+        -320
+      ],
+      "id": "2846b1be-52c9-4d71-8185-737d0362a0d1",
+      "name": "HTTP Request - access to Wordpress and sends to website1",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "TkU8SO4E8tQkngq6",
+          "name": "Unnamed credential 4"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Switch2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch2": {
+      "main": [
+        [
+          {
+            "node": "Marketing confirmed YES to proceed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Marketing checked event, NO, needs more info from staff member",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Awaiting Marketing input",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Marketing confirmed YES to proceed": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields - adds current month to allow next node to find next month events",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code for HTML email, next month only": {
+      "main": [
+        [
+          {
+            "node": "Code to convert email as a webpage preview",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request - access to Wordpress and sends to website": {
+      "main": [
+        []
+      ]
+    },
+    "Edit Fields - adds current month to allow next node to find next month events": {
+      "main": [
+        [
+          {
+            "node": "Code for HTML email, next month only",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Marketing checked event, NO, needs more info from staff member": {
+      "main": [
+        [
+          {
+            "node": "Limit - last item in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit - last item in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Awaiting Marketing input": {
+      "main": [
+        []
+      ]
+    },
+    "Code to convert email as a webpage preview": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - access to Wordpress and sends to website",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a message - currently blocked for potentialcode issue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit - last item in sheet1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Limit - last item in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - access to Wordpress and sends to website1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "46426a87-ec05-49b0-9dd6-64861c7049fa",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1ba6f8f59ecefae324f717b97045dada31dde78ff0735662b18cc8db3c2307ab"
+  },
+  "nodeGroups": [],
+  "id": "uvWlkBjC9dQXkugV",
+  "tags": []
+}
